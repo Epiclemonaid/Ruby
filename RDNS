@@ -1,0 +1,30 @@
+rev_1_file = File.open('rev_1.txt', 'w')
+rev_2_file = File.open('rev_2.txt', 'w')
+rev_3_file = File.open("rev_3.txt", "w")
+
+
+Dir['*.com','*.org'].each do |filename|
+  File.open(filename, 'r') do |file|
+    file.each_line do |line|
+      pieces = line.split(/\s+/)
+      cn     = pieces[0]
+      type   = pieces[3]
+      addr   = pieces[4]
+
+        # reversed_addr = addr.split('.').reverse.join('.')
+
+    next unless type == "A" && addr =~ /^[0-9.]+$/
+
+    # puts "cn: #{cn}"
+    # puts "addr: #{addr}"
+    # puts
+      if addr.include? "10."
+        rev_1_file.puts "#{addr}.in-addr.arpa. 60 IN PTR #{cn}"
+      elsif addr.include? "192."
+        rev_2_file.puts "#{addr}.in-addr.arpa. 60 IN PTR #{cn}"
+      else addr.include? "172."
+        rev_3_file.puts "#{addr}.in-addr.arpa. 60 IN PTR #{cn}"
+      end
+    end
+  end
+end
